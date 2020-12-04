@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer')
 
 const url = 'https://tiki.vn/'
 
-async function run () {
+async function main () {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url)
@@ -14,7 +14,10 @@ async function run () {
   
   const mainNavigationURLs = await page.$$eval(
     '[data-view-id="main_navigation_item"] > a',
-    links => links.map(i => i.getAttribute('href'))
+    links => links.map(i => ({
+      'category': i.innerText,
+      'url': i.getAttribute('href')
+    }))
   )
 
   links = [...links, ...mainNavigationURLs]
@@ -26,7 +29,10 @@ async function run () {
 
     const subNavigationURLs = await page.$$eval(
       '[data-view-id="main_navigation_sub_item"] a',
-      links => links.map(i => i.getAttribute('href'))
+      links => links.map(i => ({
+        'category': i.innerText,
+        'url': i.getAttribute('href')
+      }))
     )
 
     links = [...links, ...subNavigationURLs]
@@ -34,7 +40,7 @@ async function run () {
 
   browser.close()
 
-  fs.writeFileSync('./data/categoryURL.txt', links.reduce((res, i) => res + i + '\n', ''))
+  fs.writeFileSync('./data/categoryURL.json', JSON.stringify(links, null, 2))
 }
 
-run()
+main()
