@@ -3,13 +3,13 @@ const axios = require('axios')
 
 const api = 'https://tiki.vn/api/v2/reviews'
 
-const productIDs = fs.readFileSync('./data/productID.json', 'utf8').slice(1,-2).split(',').map(i => +i.slice(1,-1))
+const productIDs = fs.readFileSync('./data/productID.json', 'utf8').slice(1,-1).split(',').map(i => +i)
 
 async function fetchData(url) {
   try {
     const res = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36' } })
 
-    return res.data
+    return res.data || []
   } catch (error) {
     return null
   }
@@ -26,17 +26,27 @@ async function crawlReview (writer) {
 
       data.forEach(i => { writer(i) })
     }
+
+    console.log(id)
+
   }
 }
 
 async function main () {
-  const writeStream = fs.createWriteStream('./data/review.json', { flags: 'a' })
-  writeStream.write('[\n')
 
-  await crawlReview(record => writeStream.write(JSON.stringify(record, null, 2) + ',\n'))
+  try {
 
-  writeStream.write(']')
-  writeStream.end()
+    const writeStream = fs.createWriteStream('./data/review.json', { flags: 'a' })
+    writeStream.write('[\n')
+
+    await crawlReview(record => writeStream.write(JSON.stringify(record, null, 2) + ',\n'))
+
+    writeStream.write(']')
+    writeStream.end()
+
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 main()

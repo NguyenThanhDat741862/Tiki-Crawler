@@ -3,7 +3,7 @@ const axios = require('axios')
 
 const api = 'https://tiki.vn/api/v2/products'
 
-const productIDs = fs.readFileSync('./data/productID.json', 'utf8').slice(1,-2).split(',').map(i => +i.slice(1,-1))
+const productIDs = fs.readFileSync('./data/productID.json', 'utf8').slice(1,-1).split(',').map(i => +i)
 
 async function fetchData(url) {
   try {
@@ -21,18 +21,28 @@ async function crawlProduct (writer) {
 
     const data = await fetchData(crawledURL)
     
+    console.log(id)
+    
     writer(data)
+    
   }
 }
 
 async function main () {
-  const writeStream = fs.createWriteStream('./data/product.json', { flags: 'a' })
-  writeStream.write('[\n')
+  
+  try {
+      
+    const writeStream = fs.createWriteStream('./data/product.json', { flags: 'a' })
+    writeStream.write('[\n')
 
-  await crawlProduct(record => writeStream.write(JSON.stringify(record, null, 2) + ',\n'))
+    await crawlProduct(record => writeStream.write(JSON.stringify(record, null, 2) + ',\n'))
 
-  writeStream.write(']')
-  writeStream.end()
+    writeStream.write(']')
+    writeStream.end()
+    
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 main()

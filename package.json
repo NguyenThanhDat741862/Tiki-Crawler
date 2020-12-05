@@ -1,12 +1,15 @@
 {
   "name": "tikicrawler",
   "version": "1.0.0",
-  "description": "",
+  "description": "Just a school project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "crawl-category": "node ./crawlCategoryURL.js",
+    "crawl-productID": "node ./crawlProductID.js",
+    "crawl-product": "node ./crawlProductInfo.js",
+    "crawl-review": "node ./crawlReview.js"
   },
-  "author": "",
+  "author": "nguyenThanhDat741862 <nguyenThanhDat741862@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.0",
