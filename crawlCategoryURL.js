@@ -16,24 +16,29 @@ async function main () {
     '[data-view-id="main_navigation_item"] > a',
     links => links.map(i => ({
       'category': i.innerText,
-      'url': i.getAttribute('href')
+      'url': i.getAttribute('href'),
+      'parent': null
     }))
   )
 
-  links = [...links, ...mainNavigationURLs]
+  links = [...mainNavigationURLs]
 
   for (let i = 1; i <= mainNavigationItems.length; i++) {
     await page.hover(`[data-view-id="main_navigation_item"]:nth-child(${i})`)
 
     await page.waitFor(5000)
 
-    const subNavigationURLs = await page.$$eval(
+    let subNavigationURLs = await page.$$eval(
       '[data-view-id="main_navigation_sub_item"] a',
       links => links.map(i => ({
         'category': i.innerText,
         'url': i.getAttribute('href')
       }))
     )
+
+    const parent = mainNavigationURLs[i - 1]['category']
+
+    subNavigationURLs = subNavigationURLs.map(i => ({ ...i, parent }))
 
     links = [...links, ...subNavigationURLs]
   }

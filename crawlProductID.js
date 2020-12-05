@@ -3,9 +3,9 @@ const axios = require('axios')
 
 const api = 'https://tiki.vn/api/v2/products'
 
-const categoryUrls = JSON.parse(fs.readFileSync('./data/categoryURL.json', 'utf8')).filter(i => i.url.includes('c.8594'))
+const categoryUrls = JSON.parse(fs.readFileSync('./data/categoryURL.json', 'utf8')).filter(i => i.category === 'Xe Máy, Ô tô, Xe Đạp' || i.parent === 'Xe Máy, Ô tô, Xe Đạp')
 
-const crawledCategoryCode = categoryUrls.map(i => i.url.match(/c{1}\d{4,5}/g)[0].replace('c', ''))
+const crawledCategoryCode = categoryUrls.map(i => i.url.match(/c{1}\d{4,5}/g) && i.url.match(/c{1}\d{4,5}/g)[0].replace('c', '')).filter(i => i)
 
 async function fetchData(url) {
   try {
@@ -17,7 +17,9 @@ async function fetchData(url) {
   }
 }
 
-async function crawlProductID (writer) {
+async function crawlProductID () {
+  const productIDs = []
+
   for (const code of crawledCategoryCode) {
     for (let i = 1; ; i++) {
       const crawledURL = `${api}?limit=100&category=${code}&page=${i}`
@@ -25,20 +27,19 @@ async function crawlProductID (writer) {
       const { data } = await fetchData(crawledURL)
   
       if (!data || !data.length) break
-  
-      data.forEach(i => { writer(JSON.stringify(i['id'])) })
+
+      data.forEach(i => { productIDs.push(i['id']) })
     }
   }
+
+  return [...new Set(productIDs)]
 }
 
 async function main () {
-  const writeStream = fs.createWriteStream('./data/productID.json', { flags: 'a' })
-  writeStream.write('[')
-
   await crawlProductID(record => writeStream.write(JSON.stringify(record) + ','))
+  const productIDs = await crawlProductID()
 
-  writeStream.write(']')
-  writeStream.end()
+  fs.writeFileSync('./data/productID.json', JSON.stringify(productIDs))
 }
 
 main()
