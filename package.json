@@ -12,6 +12,7 @@
   "author": "nguyenThanhDat741862 <nguyenThanhDat741862@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "JSONStream": "^1.3.5",
     "axios": "^0.21.0",
     "puppeteer": "^5.5.0"
   }
