@@ -18,7 +18,7 @@ function main () {
     parser.on('data', function (data) {
       const { id, name, price, description, specifications, productset_group_name } = data.value
 
-      writeStream.write(`${id},${JSON.stringify(name)},${price},${toBase64(description)},"${JSON.stringify(specifications).replace(/"/g, '""')}",${JSON.stringify(productset_group_name)}\n`)
+      writeStream.write(`${id},"${name.replace(/"/g, '""')}",${price},${toBase64(description)},"${JSON.stringify(specifications).replace(/"/g, '""')}",${JSON.stringify(productset_group_name)}\n`)
     })    
 
     parser.on('footer', function () {
