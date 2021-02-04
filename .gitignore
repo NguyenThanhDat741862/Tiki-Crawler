@@ -1,2 +1,4 @@
 node_modules/
+data/
+tmp/
 package-lock.json
