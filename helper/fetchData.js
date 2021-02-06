@@ -6,7 +6,7 @@ module.exports = async function fetchData(url) {
 
     return res && res.data ? res.data : { data: null }
   } catch (e) {
-    console.error(`Error: ${e}`)
+    console.error(`${Date.now()} - Error: ${e}`)
   }
   return null
 }
