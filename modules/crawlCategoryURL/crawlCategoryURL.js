@@ -4,7 +4,10 @@ const puppeteer = require('puppeteer')
 const url = 'https://tiki.vn/'
 
 async function main () {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox']
+  })
   const page = await browser.newPage()
   await page.goto(url)
   
@@ -26,12 +29,6 @@ async function main () {
   )
 
   links = [...mainNavigationURLs]
-
-  // await page.screenshot({
-  //   path: "screenshot.jpg",
-  //   type: "jpeg",
-  //   fullPage: true
-  // })
 
   for (let i = 1; i <= mainNavigationItems.length; i++) {
     await page.hover(`li.MenuItem-sc-181aa19-0:nth-child(${i})`)
