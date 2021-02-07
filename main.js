@@ -1,13 +1,13 @@
 const fs = require('fs')
 const { execSync } = require('child_process')
-const { chunkArray } = require('./helper')
+const { chunkArray, sleep } = require('./helper')
 
 process.on('uncaughtException', function (e) {
   console.error(`${Date.now()} - Error: ${e}`)
   process.exit(1)
 })
 
-// // Crawl Category URL
+// Crawl Category URL
 console.log(`${Date.now()} - Crawl category URL`)
 
 try {
@@ -18,22 +18,24 @@ try {
 }
 
 
-// // Generate crawled Category Code
+// Generate crawled Category Code
 console.log(`${Date.now()} - Split category code into chunks`)
 
 const categoryUrls = JSON.parse(fs.readFileSync('./data/categoryURL/categoryURL.json', 'utf8'))
 const crawledCategoryCode = Array.from(new Set(categoryUrls.map(i => i.url.match(/c{1}\d{4,5}/g) && i.url.match(/c{1}\d{4,5}/g)[0].replace('c', '')).filter(i => i)))
 
-chunkArray(crawledCategoryCode, 50).forEach((chunk, i) => {
+chunkArray(crawledCategoryCode, 50).forEach(async (chunk, i) => {
   try {
-    fs.writeFileSync(`./tmp/categoryURL-${Date.now()}.json`, `[${chunk.toString()}]`)
+    fs.writeFileSync(`./tmp/categoryURL-${i + 1 < 10 ? `0${i + 1}` : i + 1}.json`, `[${chunk.toString()}]`)
   } catch (e) {
     console.error(`${Date.now()} - Error: ${e}`)
   }
+
+  await sleep(1000)
 })
 
 
-// // Crawl Prodict ID
+// Crawl Prodict ID
 console.log(`${Date.now()} - Crawl product ID`)
 
 const categoryCodeFiles = fs.readdirSync('./tmp')

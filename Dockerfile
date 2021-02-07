@@ -15,8 +15,6 @@ RUN apt-get install -y libcups2-dev
 RUN apt-get install -y libgtk-3-0
 RUN apt-get install -y libgbm-dev
 
-VOLUME /app/data
-
 COPY . .
 
 CMD [ "node", "main.js" ]

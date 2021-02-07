@@ -25,7 +25,7 @@ async function main () {
   console.log(`${Date.now()} - Crawling product`)
 
   const file = process.argv[2]
-  const crawledProductIDs = JSON.parse(fs.readFileSync(`./data/ProductID/${file}`))
+  const crawledProductIDs = JSON.parse(fs.readFileSync(`./data/productID/${file}`))
   const amountProductID = crawledProductIDs.length
   const now = Date.now()
 

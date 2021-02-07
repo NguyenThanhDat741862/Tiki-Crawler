@@ -25,12 +25,12 @@ async function main () {
   console.log(`${Date.now()} - Crawling review`)
 
   const file = process.argv[2]
-  const crawledProductIDs = JSON.parse(fs.readFileSync(`./data/ProductID/${file}`))
+  const crawledProductIDs = JSON.parse(fs.readFileSync(`data/ProductID/${file}`))
   const amountProductID = crawledProductIDs.length
   const now = Date.now()
   
   try {
-    const writeStream = fs.createWriteStream(`./data/review/output/review-${now}.json`, { flags: 'a' })
+    const writeStream = fs.createWriteStream(`data/review/output/review-${now}.json`, { flags: 'a' })
     writeStream.write('[')
 
     const errorProductIDs = await crawlReview(crawledProductIDs, record => writeStream.write(JSON.stringify(record) + ','))
@@ -39,7 +39,7 @@ async function main () {
     writeStream.write(']')
     writeStream.end()
 
-    fs.writeFileSync(`./data/review/error/review-${now}-error.json`, `[${errorProductIDs.toString()}]`)
+    fs.writeFileSync(`data/review/error/review-${now}-error.json`, `[${errorProductIDs.toString()}]`)
     
     console.log(`${Date.now()} - Crawling review done: ${amountProductID} (success: ${amountProductID - amountErrorProductID} - error: ${amountErrorProductID})`)
   } catch (e) {
