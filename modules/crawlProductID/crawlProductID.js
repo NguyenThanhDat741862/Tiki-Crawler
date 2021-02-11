@@ -13,7 +13,7 @@ async function crawlProductID (categoryCode) {
 
     data.forEach(i => { productIDs.push(i['id']) })
 
-    await sleep(50)
+    await sleep(200)
   }
 
   const distinctProductIDs = Array.from(new Set(productIDs))

@@ -31,7 +31,7 @@ chunkArray(crawledCategoryCode, 50).forEach(async (chunk, i) => {
     console.error(`${Date.now()} - Error: ${e}`)
   }
 
-  await sleep(1000)
+  await sleep(2000)
 })
 
 
